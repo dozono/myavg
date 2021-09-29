@@ -1,0 +1,35 @@
+{
+  "name": "myavg",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dozono/myavg.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dozono/myavg/issues"
+  },
+  "homepage": "https://github.com/dozono/myavg#readme",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.9.2",
+    "@vue/server-renderer": "^3.2.19",
+    "@vueuse/core": "^6.5.3",
+    "@vueuse/head": "^0.6.0",
+    "typescript": "^4.4.2",
+    "vite-plugin-pwa": "^0.11.2",
+    "vite-plugin-windicss": "^1.4.2",
+    "vite-ssg": "^0.15.1",
+    "vue": "^3.2.19",
+    "vue-router": "^4.0.11"
+  },
+  "dependencies": {
+    "@vue/compiler-sfc": "^3.2.19",
+    "vite": "^2.5.10"
+  }
+}
