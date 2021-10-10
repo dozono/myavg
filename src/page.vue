@@ -1,10 +1,11 @@
 <script lang=ts setup>
 import { computed, reactive, Ref, ref, watch } from 'vue'
 import { pagesData, Page } from './pages'
+import bgm from '../bgm/dasima.mp3'
 
+const bbggmm = bgm
 const index = ref(0)
 const pages: Ref<Page[]> = ref(pagesData)
-
 const page = computed(() => pages.value[index.value])
 
 const currentTextIndex = ref(0);
@@ -66,7 +67,7 @@ function next() {
             </div>
         </div>
     </div>
-    <audio :src="bgm" autoplay loop></audio>
+    <audio :src="bbggmm" autoplay loop></audio>
 </template>
 
 <style>
