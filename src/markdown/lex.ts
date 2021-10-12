@@ -27,7 +27,7 @@ export function createLexer() {
                     }
                 },
                 function (this: marked.Lexer, src: string, tokens: marked.Token[]) {
-                    const reg = /^@(.+):$/g
+                    const reg = /^@(.+)$/g
                     const result = reg.exec(src)
                     if (result && typeof result[1] === 'string') {
                         const [character, ...tags] = result[1].split('#')

@@ -26,7 +26,6 @@ export interface ChoiceCommand extends Command {
 }
 
 
-
 export interface AddAndActivateCharacter extends Command {
     type: 'addAndActivateCharacter',
     name: string

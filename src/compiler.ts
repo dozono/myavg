@@ -1,16 +1,6 @@
 import { AddAndActivateCharacter, Chat, ChoiceCommand, Commands, SceneText, SetBackgroundCommand, TextBlock } from './command';
 import { Token } from './markdown/lex';
 
-// const src = {
-//     type: 'text',
-//     text: '"烈，我还以为你是一个老实人，结果这不是过分的要死了吗为什么会出现这种展开啊？？？？？？！！！！！！！！！！！！！！！\n开局就做起了师匠的弟子这种设定写在同人小说里会被人骂的！\n啊，恶饿鬼老师.......原来如此，同人漫画就没有关系了吗'
-// }
-
-// const dest = {
-//     type: 'textBlock',
-//     lines: ['烈，我还以为你是一个老实人，结果这不是过分的要死了吗为什么会出现这种展开啊？？？？？？！！！！！！！！！！！！！！！', "开局就做起了师匠的弟子这种设定写在同人小说里会被人骂的！", "啊，恶饿鬼老师.......原来如此，同人漫画就没有关系了吗"]
-// }
-
 interface CompileContext {
     lastChoiceTitle: string
 }
@@ -47,17 +37,18 @@ function compileInline(context: CompileContext, tokens: Token[], result: Command
             }
 
             result.push(cmd)
+            return
         } else if (token.type === 'scene') {
             const cmd: SetBackgroundCommand = {
                 type: 'setBackground',
                 background: token.scene
             }
-
             result.push(cmd)
+            return
         } else if (token.type === 'choiceTitle') {
             context.lastChoiceTitle = token.title
+            return
         }
-        return
     }
 
     const command: TextBlock = {
