@@ -18,9 +18,11 @@ export interface Page {
 
         }
     }
-    sceneText: {
+    sceneText?: {
+        lines:string
 
     }
+    choices?:string[]
     index: number
 }
 export const pagesData: Page[] = [{
@@ -41,7 +43,7 @@ export const pagesData: Page[] = [{
 微笑着向烈搭话的，正是幻想乡中数一数二的大妖怪，风见幽香`,
         effect: {},
     },
-    sceneText: {}
+  
 },
 {
 
@@ -58,7 +60,9 @@ export const pagesData: Page[] = [{
         烈海王，偷袭`,
         effect: {},
     },
-    sceneText: {}
+    sceneText:{
+        lines:'野生的烈海王出现了'
+    },
 },
 {
 
@@ -75,7 +79,7 @@ export const pagesData: Page[] = [{
         烈海王，快使用闪电五连鞭！！！！`,
         effect: {},
     },
-    sceneText: {}
+
 },
 {
 
@@ -83,7 +87,7 @@ export const pagesData: Page[] = [{
     background: background,
     avatar: [{
         id: '',
-        name: '铃仙',
+        name: '幽香',
         image: reisen,
         position: "col-span-2 col-start-5"
     }],
@@ -91,6 +95,23 @@ export const pagesData: Page[] = [{
         content: `还有就是请尽量不要在我面前表现出过激的战斗欲望，可能会发生不好的事情`,
         effect: {},
     },
-    sceneText: {}
-}
-]
+},
+{
+
+    index: 4,
+    background: background,
+    avatar: [{
+        id: '',
+        name: '幽香',
+        image: reisen,
+        position: "col-span-2 col-start-5"
+    }],
+    choices:[
+        '啊我死了',
+        '我是弟弟'
+    ],
+    text:{
+        content:'',
+        effect:{}
+    }
+}]

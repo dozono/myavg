@@ -6,8 +6,11 @@ export interface Command {
  * 代表一次出现的文字 
  */
 export interface TextBlock {
-    lines: string[]
-    
+    type: 'textBlock'
+    /**
+     * HTML content
+     */
+    content: string
 }
 
 export interface SetBackgroundCommand extends Command {
@@ -21,6 +24,8 @@ export interface ChoiceCommand extends Command {
     choices: string[]
     selected: number
 }
+
+
 
 export interface AddAndActivateCharacter extends Command {
     type: 'addAndActivateCharacter',
@@ -67,6 +72,7 @@ export interface PlaySound extends Command {
 }
 
 export type Commands =
+    TextBlock |
     SetBackgroundCommand |
     ChoiceCommand |
     AddAndActivateCharacter |
