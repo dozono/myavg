@@ -1,4 +1,6 @@
 import { computed, reactive, ref, toRefs } from "vue";
+import { RenderableDomText } from "./command";
+import bip from '../sounds/sfx-blipmale.wav'
 
 export interface CharacterInfo {
     url: string
@@ -8,6 +10,38 @@ export interface CharacterInfo {
 export function useBackground() {
     const background = ref("");
     return { background }
+}
+
+export function useSound() {
+    const data = reactive({
+        bgm: '',
+        sounds: {
+            'bip': {
+                url: bip,
+                play: () => { },
+                stop: () => { }
+            },
+        } as Record<string, { url: string, play: () => void, stop: () => void }>,
+    })
+
+    function playSound(name: string) {
+        if (data.sounds[name]) {
+            data.sounds[name].play()
+        }
+
+    }
+
+    function stopSound(name: string) {
+        if (data.sounds[name]) {
+            data.sounds[name].stop()
+        }
+    }
+
+    return {
+        ...toRefs(data),
+        playSound,
+        stopSound,
+    }
 }
 
 export function useCharacters() {
@@ -20,16 +54,15 @@ export function useCharacters() {
 }
 
 export function useText() {
-    const blocks = ref([] as string[])
-    const content = ref("")
+    const content = ref([] as RenderableDomText[])
 
-    return { blocks, content }
+    return { content }
 }
 
 export function useChoice() {
     const choice = reactive({
         title: '',
-        choices: [] as string[],
+        choices: [] as RenderableDomText[][],
     })
 
     return { choice }

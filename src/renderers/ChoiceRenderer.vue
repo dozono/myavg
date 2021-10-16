@@ -1,5 +1,5 @@
 <script lang=ts setup>
-import { useStore, useChoice, useCharacters } from './store'
+import { useStore, useChoice, useCharacters } from '../store'
 
 const { choice } = useStore(useChoice)
 const { activeCharacterImage } = useStore(useCharacters)

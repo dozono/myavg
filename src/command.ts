@@ -2,6 +2,11 @@ export interface Command {
     type: string
 }
 
+export interface RenderableDomText {
+    tag: string
+    style?: string
+    text: string
+}
 /**
  * 代表一次出现的文字 
  */
@@ -10,7 +15,7 @@ export interface TextBlock {
     /**
      * HTML content
      */
-    content: string
+    content: RenderableDomText[]
 }
 
 export interface SetBackgroundCommand extends Command {
@@ -21,7 +26,7 @@ export interface SetBackgroundCommand extends Command {
 export interface ChoiceCommand extends Command {
     type: 'choice',
     title: string
-    choices: string[]
+    choices: RenderableDomText[][]
     selected: number
 }
 

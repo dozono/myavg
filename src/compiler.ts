@@ -1,8 +1,30 @@
-import { AddAndActivateCharacter, Chat, ChoiceCommand, Commands, SceneText, SetBackgroundCommand, TextBlock } from './command';
+import { AddAndActivateCharacter, Chat, ChoiceCommand, Commands, RenderableDomText, SceneText, SetBackgroundCommand, TextBlock } from './command';
 import { Token } from './markdown/lex';
 
 interface CompileContext {
     lastChoiceTitle: string
+}
+
+
+function renderTokensToDom(t: Token[], commands: Commands[]): RenderableDomText[] {
+    let result: RenderableDomText[] = []
+    for (const sub of t) {
+        if (sub.type === 'text') {
+            if ('tokens' in sub && sub.tokens) {
+                result.push(...renderTokensToDom(sub.tokens, commands))
+            } else {
+                const text = sub.text.replace(/\n/g, '<br>')
+                result.push({ text, tag: 'span' })
+            }
+        } else if (sub.type === 'strong') {
+            const text = sub.text.replace(/\n/g, '<br>')
+            result.push({ tag: 'strong', text })
+        } else if (sub.type === 'em') {
+            const text = sub.text.replace(/\n/g, '<br>')
+            result.push({ tag: 'span', text, style: 'font-style: italic' })
+        }
+    }
+    return result
 }
 
 function renderTokens(t: Token[], commands: Commands[]): string {
@@ -13,14 +35,14 @@ function renderTokens(t: Token[], commands: Commands[]): string {
                 return renderTokens(sub.tokens, commands)
             } else {
                 const text = sub.text.replace(/\n/g, '<br>')
-                result += `<div>${text}</div>`
+                result += `<span>${text}</span>`
             }
         } else if (sub.type === 'strong') {
             const text = sub.text.replace(/\n/g, '<br>')
             result += `<strong>${text}</strong>`
         } else if (sub.type === 'em') {
             const text = sub.text.replace(/\n/g, '<br>')
-            result += `<div>${text}</div>`
+            result += `<span class="font-style: italic">${text}</span>`
         }
     }
     return result
@@ -52,7 +74,7 @@ function compileInline(context: CompileContext, tokens: Token[], result: Command
     }
 
     const command: TextBlock = {
-        content: renderTokens(tokens, result),
+        content: renderTokensToDom(tokens, result),
         type: 'textBlock'
     }
     result.push(command)
@@ -74,7 +96,7 @@ export function compileToCommands(tokens: Token[]): Commands[] {
                 const choice: ChoiceCommand = {
                     type: 'choice',
                     title: context.lastChoiceTitle,
-                    choices: cur.items.map(e => renderTokens(e.tokens, result)),
+                    choices: cur.items.map(e => renderTokensToDom(e.tokens, result)),
                     selected: 0
                 }
 
@@ -104,7 +126,7 @@ export function compileToCommands(tokens: Token[]): Commands[] {
                 if (t.type === 'paragraph') {
                     cmd.blocks.push({
                         type: 'textBlock',
-                        content: renderTokens(t.tokens, result)
+                        content: renderTokensToDom(t.tokens, result)
                     })
                 }
             }

@@ -108,7 +108,6 @@ export function usePlayer() {
     }
 
     async function processTextBlock(command: TextBlock) {
-        console.log(command)
         activate(templates.avatar, templates.text)
         content.value = command.content
         await waitUserInput()

@@ -1,5 +1,5 @@
 <script lang=ts setup>
-import { useStore, useBackground } from './store'
+import { useStore, useBackground } from '../store'
 
 const { background } = useStore(useBackground)
 
