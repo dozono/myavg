@@ -4,7 +4,7 @@ import { templates, usePlayer } from '../player';
 import BackgroundRenderer from './BackgroundRenderer.vue';
 import CharacterTalkRenderer from './CharacterTalkRenderer.vue';
 import ChoiceRenderer from './ChoiceRenderer.vue';
-import SoundRenderer from "./SoundRenderer.ts";
+import SoundRenderer from "./SoundRenderer";
 
 const { play, onNext, activeTemplates } = usePlayer()
 const isChoiceActive = computed(() => activeTemplates.value.indexOf(templates.choice) !== -1)

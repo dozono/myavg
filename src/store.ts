@@ -1,6 +1,8 @@
-import { computed, reactive, ref, toRefs } from "vue";
+import { computed, isReadonly, onMounted, reactive, ref, toRefs } from "vue";
 import { RenderableDomText } from "./command";
 import bip from '../sounds/sfx-blipmale.wav'
+import { AudioBufferSourceManager } from "./audio";
+import SoundRenderer from "./renderers/SoundRenderer";
 
 export interface CharacterInfo {
     url: string
@@ -11,6 +13,8 @@ export function useBackground() {
     const background = ref("");
     return { background }
 }
+
+const audioManager = new AudioBufferSourceManager()
 
 export function useSound() {
     const data = reactive({
@@ -24,11 +28,29 @@ export function useSound() {
         } as Record<string, { url: string, play: () => void, stop: () => void }>,
     })
 
+    async function load() {
+        console.log('sounds')
+        for (const [name, metadata] of Object.entries(data.sounds)) {
+            const buf = await audioManager.getAudioBuffer(metadata.url)
+            data.sounds[name].play = () => {
+                const source = audioManager.context.createBufferSource()
+                source.buffer = buf
+                source.connect(audioManager.context.destination)
+
+                source.start()
+
+                data.sounds[name].stop = () => {
+                    console.log('stop!')
+                    source.stop()
+                }
+            }
+        }
+    }
+
     function playSound(name: string) {
         if (data.sounds[name]) {
             data.sounds[name].play()
         }
-
     }
 
     function stopSound(name: string) {
@@ -36,6 +58,10 @@ export function useSound() {
             data.sounds[name].stop()
         }
     }
+
+    onMounted(() => {
+        load()
+    })
 
     return {
         ...toRefs(data),

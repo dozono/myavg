@@ -3,6 +3,7 @@ import { useStore, useChoice, useCharacters } from '../store'
 
 const { choice } = useStore(useChoice)
 const { activeCharacterImage } = useStore(useCharacters)
+import RenderText from './RenderText'
 
 </script>
 <template>
@@ -14,9 +15,9 @@ const { activeCharacterImage } = useStore(useCharacters)
             </div>
             <div class="col-span-2 flex flex-col items-center">
                 <div class="flex flex-col gap-5">
-                    <span v-for="(c, i) in choice.choices" :key="c" class="flex gap-2">
+                    <span v-for="(c, i) in choice.choices" :key="i" class="flex gap-2">
                         <span>{{ i + 1 }}.</span>
-                        <span v-html="c" />
+                        <RenderText :contents="c" />
                     </span>
                 </div>
             </div>

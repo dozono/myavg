@@ -1,7 +1,7 @@
 <script lang=ts setup>
 import { useCharacters, useStore, useText } from '../store';
 
-import renderText from './renderText';
+import RenderText from './RenderText';
 
 const { activeCharacterName, characters } = useStore(useCharacters)
 const { content } = useStore(useText)
@@ -38,7 +38,7 @@ const { content } = useStore(useText)
             class="row-span-1 flex items-center w-full justify-center bg-opacity-65 border border-white border-solid rounded bg-white z-10 px-50"
         >
             <div class="text-5xl font-bold w-full text-shadow-md leading-20">
-                <renderText :contents="content" />
+                <RenderText :contents="content" animated />
             </div>
         </div>
     </div>

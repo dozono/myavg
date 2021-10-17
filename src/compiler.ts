@@ -13,8 +13,10 @@ function renderTokensToDom(t: Token[], commands: Commands[]): RenderableDomText[
             if ('tokens' in sub && sub.tokens) {
                 result.push(...renderTokensToDom(sub.tokens, commands))
             } else {
-                const text = sub.text.replace(/\n/g, '<br>')
-                result.push({ text, tag: 'span' })
+                const texts = sub.text.split('\n')
+                for (const text of texts) {
+                    result.push({ text, tag: 'span' })
+                }
             }
         } else if (sub.type === 'strong') {
             const text = sub.text.replace(/\n/g, '<br>')
