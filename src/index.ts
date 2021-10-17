@@ -1,7 +1,7 @@
 import 'virtual:windi.css'
 import { createApp, defineComponent, h } from 'vue'
 import index from './renderers/Renderer.vue'
-import { provideStore, useBackground, useCharacters, useChoice, useSound, useText } from './store'
+import { provideStore, useBackground, useCharacters, useChoice, useSound, useText, useUserInput } from './store'
 
 
 createApp(defineComponent({
@@ -11,6 +11,7 @@ createApp(defineComponent({
         provideStore(useText)
         provideStore(useChoice)
         provideStore(useSound)
+        provideStore(useUserInput)
 
         return () => h(index)
     }

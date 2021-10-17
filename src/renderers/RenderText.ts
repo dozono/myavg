@@ -1,6 +1,6 @@
 import { computed, defineComponent, h, onMounted, ref, watch } from 'vue'
 import { RenderableDomText } from '../command'
-import { useSound, useStore } from '../store'
+import { useSound, useStore, useUserInput } from '../store'
 import { optional, required, withDefault } from '../utils/props'
 
 export default defineComponent({
@@ -13,13 +13,18 @@ export default defineComponent({
     setup(props, context) {
         const status = ref([] as number[])
         const { playSound } = useStore(useSound)
+        const { waitUserInput } = useStore(useUserInput)
         const lengths = computed(() => props.contents.map(c => c.text.length))
         const totalLength = computed(() => lengths.value.reduce((a, b) => a + b, 0))
+        
         function getLength(i: number) {
             return status.value[i]
         }
         watch(() => props.contents, () => {
             status.value = new Array(props.contents.length).fill(0)
+            waitUserInput().then(() => {
+                flush()
+            })
             startAnimation()
         })
         status.value = new Array(props.contents.length).fill(0)
@@ -97,6 +102,7 @@ export default defineComponent({
         }
         function flush() {
             index.value = totalLength.value
+            stopSound()
             context.emit('finish')
         }
 

@@ -1,6 +1,6 @@
 import { AddAndActivateCharacter, Chat, ChoiceCommand, Commands, RemoveCharacter, SetBackgroundCommand, TextBlock } from "./command";
 import { MockBgResolver, MockResolver } from "./mockMapping";
-import { CharacterInfo, useBackground, useCharacters, useChoice, useStore, useText } from "./store";
+import { CharacterInfo, useBackground, useCharacters, useChoice, useStore, useText, useUserInput } from "./store";
 import sample from '../stages/sample.md?raw'
 import { createLexer } from "./markdown/lex";
 import { compileToCommands } from "./compiler";
@@ -9,11 +9,12 @@ import { ref } from "vue";
 function resolveCharacter(name: string, tags: string[]): CharacterInfo {
     const sortedTag = tags.sort()
 
-    const url = new MockResolver().resolve(name, sortedTag)
+    const result = new MockResolver().resolve(name, sortedTag)
 
     return {
         name,
-        url: url ?? ''
+        url: result?.url ?? '',
+        renderType: result?.type ?? 'character'
     }
 }
 
@@ -27,8 +28,10 @@ export const templates = {
 export function usePlayer() {
     const { characters, activeCharacter } = useStore(useCharacters)
     const { background } = useStore(useBackground)
-    const { content } = useStore(useText)
+    const { content, isText } = useStore(useText)
     const { choice } = useStore(useChoice)
+
+    const { waitUserInput } = useStore(useUserInput)
 
     const lex = createLexer()
     const tokens = lex.lex(sample)
@@ -37,17 +40,6 @@ export function usePlayer() {
     console.log(commands)
 
     const activeTemplates = ref(['avatar', 'text'])
-
-    let _resolve = () => { }
-    function onNext() {
-        _resolve()
-    }
-    async function waitUserInput() {
-        let promise = new Promise<void>((resolve) => {
-            _resolve = resolve
-        })
-        await promise
-    }
 
     function activate(...templates: string[]) {
         for (const template of templates) {
@@ -79,7 +71,9 @@ export function usePlayer() {
             characters.value.push(resolveCharacter(command.name, command.tags));
             index = characters.value.length - 1;
         } else {
-            characters.value[index].url = new MockResolver().resolve(command.name, command.tags) ?? characters.value[index].url
+            const resolved = new MockResolver().resolve(command.name, command.tags);
+            characters.value[index].url = resolved?.url ?? characters.value[index].url
+            characters.value[index].renderType = resolved?.type ?? characters.value[index].renderType
         }
         activeCharacter.value = index
 
@@ -99,7 +93,8 @@ export function usePlayer() {
         }
     }
 
-    async function showChat(command: Chat) {
+    async function processChat(command: Chat) {
+        isText.value = false
         activate(templates.avatar, templates.text)
         for (let block of command.blocks) {
             content.value = block.content
@@ -108,6 +103,7 @@ export function usePlayer() {
     }
 
     async function processTextBlock(command: TextBlock) {
+        isText.value = true
         activate(templates.avatar, templates.text)
         content.value = command.content
         await waitUserInput()
@@ -139,7 +135,7 @@ export function usePlayer() {
                 await addAndActivateCharacter(command);
                 break;
             case "chat":
-                await showChat(command)
+                await processChat(command)
                 break;
             case "removeCharacter":
                 await removeCharacter(command);
@@ -159,7 +155,7 @@ export function usePlayer() {
 
     return {
         play,
-        onNext,
+        waitUserInput,
         activeTemplates,
     }
 }

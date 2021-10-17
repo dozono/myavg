@@ -6,6 +6,7 @@ import SoundRenderer from "./renderers/SoundRenderer";
 
 export interface CharacterInfo {
     url: string
+    renderType: 'avatar' | 'character'
     name: string
 }
 
@@ -75,14 +76,16 @@ export function useCharacters() {
     const activeCharacter = ref(0);
     const activeCharacterName = computed(() => characters.value[activeCharacter.value]?.name ?? '')
     const activeCharacterImage = computed(() => characters.value[activeCharacter.value]?.url ?? '')
+    const activeCharacterType = computed(() => characters.value[activeCharacter.value]?.renderType ?? '')
 
-    return { characters, activeCharacter, activeCharacterName, activeCharacterImage }
+    return { characters, activeCharacter, activeCharacterName, activeCharacterImage, activeCharacterType }
 }
 
 export function useText() {
     const content = ref([] as RenderableDomText[])
+    const isText = ref(false)
 
-    return { content }
+    return { content, isText }
 }
 
 export function useChoice() {
@@ -92,6 +95,30 @@ export function useChoice() {
     })
 
     return { choice }
+}
+
+
+export function useUserInput() {
+    let userInputWaitQueue: Array<() => void> = []
+
+    function onUserInput() {
+        const next = userInputWaitQueue.shift()
+        if (next) {
+            next()
+        }
+    }
+
+    async function waitUserInput() {
+        let promise = new Promise<void>((resolve) => {
+            userInputWaitQueue.unshift(resolve)
+        })
+        await promise
+    }
+
+    return {
+        waitUserInput,
+        onUserInput,
+    }
 }
 
 const store = new Map<Function, any>()
@@ -104,6 +131,9 @@ export function useStore<T, A>(f: (...args: A[]) => T): T {
     }
 }
 
+
 export function provideStore<T, A>(f: (...args: A[]) => T, ...args: A[]): void {
     store.set(f, f(...args))
 }
+
+

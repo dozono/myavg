@@ -3,20 +3,28 @@ import sup from '../assets/kaioh_sup.png'
 import sweat from '../assets/kaioh_sweat.jpg'
 import pico from '../assets/pico.jpg'
 import forever from '../bgs/forever.jpg'
+import yusuke from '../avatar/yusuke.png'
 
+interface CharacterRenderInfoData {
+    url: string
+    type?: 'character' | 'avatar'
+}
 
-export const mockMapping: Record<string, Record<string, string>> = {
+export const mockMapping: Record<string, Record<string, CharacterRenderInfoData>> = {
     '烈海王': {
-        '': sweat,
-        '受伤': damaged,
-        '惊讶': sup,
-        '汗': sweat,
+        '': { url: sweat, type: 'avatar' },
+        '受伤': { url: damaged, type: 'avatar' },
+        '惊讶': { url: sup, type: 'avatar' },
+        '汗': { url: sweat, type: 'avatar' },
     },
     '？？？': {
-        '': ''
+        '': { url: '' }
     },
     '皮克': {
-        '': pico
+        '': { url: pico, type: 'avatar' }
+    },
+    '幽香': {
+        '': { url: yusuke }
     }
 }
 
@@ -29,7 +37,7 @@ export class MockBgResolver {
 
 
 export class MockResolver {
-    resolve(name: string, tags: string[]): string | undefined {
+    resolve(name: string, tags: string[]): { url: string, type?: 'character' | 'avatar' } | undefined {
         if (!mockMapping[name]) {
             return undefined
         }
